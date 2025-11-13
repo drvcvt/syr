@@ -1,0 +1,10 @@
+[package]
+name = "syr"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+quote = "1.0.41"
+syn = { version = "2", features = ["full", "fold", "visit"] }
+visit = "0.1.0"
+prettyplease = "0.2"
