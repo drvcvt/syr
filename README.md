@@ -47,9 +47,7 @@ Ablauf:
 
 ### Direkt über Cargo
 
-cargo install --git [https://github.com/](https://github.com/)<username>/syr
-
-`<username>` durch deinen GitHub‑Namen ersetzen.
+cargo install --git [https://github.com/](https://github.com/)drvcvt/syr
 
 ## Lizenz
 
