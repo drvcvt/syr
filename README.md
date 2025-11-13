@@ -1,3 +1,5 @@
+# i forgot /src my bad, will push tomorrow
+
 # syr
 
 **syr**
