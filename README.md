@@ -1,64 +1,72 @@
 # syr
 
-**syr**
-save your rust · strip your relics · single-yield-renamer · sick young refactorer
+**s**ave **y**our **r**ust · **s**trip **y**our **r**elics · **s**ingle-**y**ield-**r**enamer · **s**ick **y**oung **r**efactorer
 
-`syr` ist ein kleines CLI‑Tool, das Rust‑Dateien direkt im Dateisystem umschreibt. Es erkennt unbenutzte lokale Variablen und passt ihre Namen automatisch an.
+A CLI tool that automatically manages unused variable prefixes in Rust files by renaming them with underscores.
+
+> 📖 [Deutsche Version](README.de.md)
+
+## What it does
+
+`syr` analyzes your Rust code and automatically:
+- Prefixes unused local variables with `_` (e.g., `foo` → `_foo`)
+- Removes the `_` prefix when a variable becomes used (e.g., `_bar` → `bar`)
+- Reformats your code with `prettyplease`
+
+## Quick Start
+
+### Installation
+
+#### From source
+```bash
+git clone https://github.com/drvcvt/syr
+cd syr
+cargo install --path .
+```
+
+#### From GitHub
+```bash
+cargo install --git https://github.com/drvcvt/syr
+```
+
+### Usage
+
+Process a single Rust file:
+```bash
+syr path/to/file.rs
+```
+
+The tool will:
+1. Parse the file as an AST
+2. Analyze variable declarations and usages
+3. Rename variables based on usage:
+   - `_name` if never used
+   - `name` if used
+4. Rewrite all bindings and expression paths
+5. Format and save the file
 
 ## Features
 
-* erkennt lokale Variablen, die deklariert, aber nie benutzt wurden
-* unused locals werden nach `_name` umbenannt
-* wenn eine zuvor geprefixte Variable (z. B. `_foo`) später benutzt wird, wird sie automatisch wieder zu `foo`
-* der gesamte Code wird über `prettyplease` erneut formatiert
-* renaming basiert auf „Basenamen“: `foo`, `_foo`, `__foo` gehören logisch zur gleichen Gruppe
-* mehrfacher Durchlauf ist idempotent: die Datei bleibt stabil
-* exit code 0 bei Erfolg, ≠0 bei Fehlern
+- **Smart renaming**: Variables with the same basename (`foo`, `_foo`, `__foo`) are treated as one logical group
+- **Idempotent**: Running multiple times produces stable results
+- **Simple**: Operates on a single file at a time
+- **Exit codes**: Returns 0 on success, non-zero on errors
 
-## Wichtige Einschränkungen
+## Important Limitations
 
-* Kommentare werden **nicht** erhalten. `syn` entfernt sie beim Parsen komplett und `prettyplease` kann sie nicht rekonstruieren.
-* Für einfache Identifier gedacht; komplexe Macro‑Kontexte werden nicht komplett unterstützt.
+- **Comments are not preserved**: `syn` removes comments during parsing, and `prettyplease` cannot restore them
+- **Simple identifiers only**: Complex macro contexts are not fully supported
 
-## Verwendung
+## How it Works
 
-syr arbeitet auf einer einzigen Datei:
+The renaming is based on "basenames" - all variants of a variable (`foo`, `_foo`, `__foo`) are logically grouped together. The tool then decides the appropriate form based on usage:
 
-syr pfad/zur/datei.rs
+- If a variable is declared but never used → prefix with `_`
+- If a variable is used → remove `_` prefix
+- Variables already correctly prefixed are unchanged
 
-Ablauf:
+## License
 
-1. Datei als AST parsen
-2. Deklarationen und Nutzungen pro Basename sammeln
-3. Für jede Variable bestimmen:
-
-   * `_name`, wenn nie genutzt
-   * `name`, wenn genutzt
-4. Alle entsprechenden Bindungen und Expr‑Paths umschreiben
-5. Datei formatiert zurückschreiben
-
-## Installation
-
-### Von Source lokal
-
-1. Repository klonen
-2. Ins Projekt wechseln
-3. Installieren via Cargo
-
-### Direkt über Cargo
-
-cargo install --git [https://github.com/](https://github.com/)drvcvt/syr
-
-## Lizenz
-
-MIT License
+MIT License - see [LICENSE](LICENSE) for details
 
 Copyright (c) 2025 Matti
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-
-Der obige Copyright-Hinweis und dieser Genehmigungshinweis müssen in allen Kopien oder wesentlichen Teilen der Software enthalten sein.
-
-DIE SOFTWARE WIRD OHNE JEDE AUSDRÜCKLICHE ODER IMPLIZITE GARANTIE BEREITGESTELLT, EINSCHLIESSLICH DER GARANTIE DER MARKTGÄNGIGKEIT, DER EIGNUNG FÜR EINEN BESTIMMTEN ZWECK UND DER NICHTVERLETZUNG. IN KEINEM FALL SIND DIE AUTOREN ODER COPYRIGHTINHABER FÜR ANSPRÜCHE, SCHÄDEN ODER ANDERE HAFTUNG VERANTWORTLICH, SEI ES AUS VERTRAG, UNERLAUBTER HANDLUNG ODER ANDERWEITIG, DIE AUS ODER IN VERBINDUNG MIT DER SOFTWARE ODER DER VERWENDUNG ODER SONSTIGEN GESCHÄFTEN MIT DER SOFTWARE ENTSTEHEN.
-
-MIT‑Lizenz. Siehe LICENSE für Details.
